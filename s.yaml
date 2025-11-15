@@ -13,12 +13,26 @@ services:
       function:
         name: next-fn
         description: Next.js App
-        runtime: nodejs18
-        timeout: 60
-        memorySize: 1024
+        runtime: custom.debian10
         codeUri: ./
-        handler: index.handler
+        memorySize: 1024
+        timeout: 60
         initializationTimeout: 60
+        handler: index.handler
+
+        # 🟢 构建步骤（非常关键）
+        build:
+          commands:
+            - npm install
+            - npm run build
+
+        # 🟢 运行环境（custom runtime）
+        customRuntimeConfig:
+          command:
+            - bash
+          args:
+            - start.sh
+
       triggers:
         - name: httpTrigger
           type: http
@@ -29,8 +43,3 @@ services:
               - POST
               - PUT
               - DELETE
-      customRuntimeConfig:
-        command:
-          - bash
-        args:
-          - start.sh
