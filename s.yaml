@@ -1,27 +1,36 @@
 edition: 1.0.0
+
 name: yanjian
 access: default
-
-vars:
-  region: cn-hangzhou
 
 services:
   web:
     component: fc
     props:
-      region: ${vars.region}
+      region: cn-hangzhou
       service:
-        name: yanjian-web
+        name: yanjian-service
       function:
         name: next-fn
-        runtime: custom
-        codeUri: ./
+        description: Next.js App
+        runtime: nodejs18
         timeout: 60
-        customRuntimeConfig:
-          command: ["npm", "start"]
+        memorySize: 1024
+        codeUri: ./
+        handler: index.handler
+        initializationTimeout: 60
       triggers:
         - name: httpTrigger
           type: http
           config:
             authType: anonymous
-            methods: ["GET", "POST", "PUT", "DELETE"]
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      customRuntimeConfig:
+        command:
+          - bash
+        args:
+          - start.sh
